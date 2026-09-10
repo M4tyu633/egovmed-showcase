@@ -27,12 +27,7 @@ async function ereportToken() {
   return token;
 }
 
-/**
- * eReport wants `639XXXXXXXXX` (per the docs' example body). Patient phones are stored as
- * `+639170000000` and are typed by hand as `09171234567`, so a bare `.replace(/^\+/,'')` used to
- * send `09171234567` — the wrong country format. Normalize to the documented shape; anything we
- * can't recognize is passed through digits-only rather than mangled into a different number.
- */
+/* Normalize Philippine numbers to country-prefixed digits. Unrecognized formats retain their digits without rewriting the country code. */
 function phMobile(raw) {
   const digits = String(raw == null ? '' : raw).replace(/\D/g, '');
   if (digits.length === 12 && digits.startsWith('63')) return digits;

@@ -147,10 +147,7 @@ export default function SignIn({ c, S, A }) {
           appearing under it. */}
       {showWidget && (
         <div data-stagger>
-          {/* No test-account note out here. The sign-in screen is the first thing anyone opening
-              eGovMed sees, and a sandbox-credentials card is the wrong first impression of a
-              citizen-facing app. The same guidance now travels with the numbers themselves, on
-              the panel injected into the widget's own modal — see lib/egovTestAccounts.js. */}
+          {/* Keep sandbox credentials inside the login dialog through lib/egovTestAccounts.js. */}
           <div className="egov-login-slot" ref={widgetRef} />
           {widgetError && (
             <div role="alert" className="card" style={{ marginTop: 12, color: 'var(--red)', fontWeight: 650, fontSize: '0.9em' }}>
@@ -181,9 +178,7 @@ export default function SignIn({ c, S, A }) {
         </p>
       )}
 
-      {/* "Not you?" is a question, so the answer has to be "then set who I am". It used to toast
-          its own label; now it opens the two fields that actually decide whose profile this is.
-          Mock mode only — a live eGovPH session brings its own PhilSys-backed identity. */}
+      {/* Open profile setup in mock mode. Live account identity comes from eGov SSO. */}
       {!live && (editingProfile ? (
         <ProfileSetup
           c={c}

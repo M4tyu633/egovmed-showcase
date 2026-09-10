@@ -113,14 +113,7 @@ async function verifyRecord(id, patientId) {
   };
 }
 
-/**
- * Doctor view: AI-summarized history plus the labs whose last explicit chain check passed.
- *
- * Do not call verifyRecord() in a loop here. In live mode each check is a metered eth_call, and
- * merely opening Records used to fan out one RPC request per lab. A citizen can still perform a
- * fresh, single-record check by opening that record; this summary intentionally uses the stored
- * last-known anchor status and recomputes local integrity without touching the gateway.
- */
+/* Build a summary using stored anchor status and local integrity checks. This view makes no blockchain requests. Patients can request a fresh check for an individual record. */
 async function buildDoctorSummary(patientId) {
   const store = getStore();
   const [rawRecords, triage] = await Promise.all([

@@ -4,8 +4,7 @@ import rosaAvatar from '../assets/home-avatar-rosa.png';
 import digitalIdArt from '../assets/home-digital-id.png';
 import verifiedLabsArt from '../assets/home-verified-labs.png';
 
-// Greeting and phone used to come from hardcoded dictionary strings ("Hi, Rosa", a fixed number),
-// so every patient saw the same identity. Both now read the signed-in patient.
+// Display the authenticated patient profile, with a fallback while it loads.
 const maskPhone = (p) => {
   const digits = String(p || '').replace(/[^0-9]/g, '');
   if (digits.length < 6) return null;

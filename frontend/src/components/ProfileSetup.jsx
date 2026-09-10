@@ -8,18 +8,7 @@ const inputStyle = {
   padding: '11px 13px', font: 'inherit', background: 'var(--surface)', color: 'var(--ink)',
 };
 
-/**
- * "Not you? Switch account" on the sign-in screen: set the name and mobile number on this
- * profile before walking into the app. Previously that button's entire behaviour was toasting
- * its own label.
- *
- * Ordering problem it has to solve: PATCH /patients/me needs a session, and this sits on the
- * screen you use to get one. Opening the panel mints the mock session up front. That grants
- * nothing a tap on "Sign in" wouldn't have granted a second later — mock mode accepts any six
- * digits and hands back the same demo patient either way, so there is no credential to bypass.
- * SignIn only renders this in mock mode; a live eGovPH session is minted by the provider's own
- * redirect and its demographics come from PhilSys, so there is nothing to pre-set there.
- */
+/* Allow mock users to edit their demonstration profile. Create a mock session before calling the authenticated profile endpoint. This panel is unavailable for live SSO accounts. */
 export default function ProfileSetup({ c, onSaved, onCancel }) {
   const ref = useRef(null);
   const [loading, setLoading] = useState(true);

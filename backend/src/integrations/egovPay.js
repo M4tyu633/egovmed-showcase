@@ -24,10 +24,7 @@ const normalizePaymentStatus = (data = {}) => {
   return value == null || String(value).trim() === '' ? 'pending' : String(value).trim().toLowerCase();
 };
 
-// Mock mode used to hardcode every checkout as 'paid', which meant the failed-payment UI could
-// never actually be exercised in local/demo testing (no eGov credentials required, per the
-// backend README). EGOVPAY_MOCK_OUTCOME lets a developer force a specific terminal status while
-// testing; anything unrecognized falls back to the original always-succeeds demo behavior.
+// Support simulated failed payments as well as successful checkout in mock mode.
 const MOCK_TERMINAL_STATUSES = new Set(['paid', 'failed', 'voided', 'cancelled', 'declined']);
 const mockFinalStatus = () => (MOCK_TERMINAL_STATUSES.has(cfg.mockOutcome) ? cfg.mockOutcome : 'paid');
 
@@ -75,12 +72,7 @@ async function createCheckout({ amount, currency = 'PHP', description, items = [
     };
   }
   const ref = randomId('pay_');
-  // This used to point at /mock-checkout/{ref}, a path nothing serves: the frontend's SPA rewrite
-  // answered it with index.html, so following the link just reloaded the app shell on a route the
-  // router doesn't know and the payment was silently abandoned. Point it at /payment/return —
-  // the route the app already uses to resume a hosted checkout — and carry the bill id so the
-  // returning page can resolve the payment from the URL alone, without needing the sessionStorage
-  // handle that a real gateway round trip is relied on to preserve.
+  // Return through the payment route so the frontend can resume the bill.
   const query = new URLSearchParams({ ...(billId ? { bill: billId } : {}), ref, amount: String(amount), mock: '1' });
   return {
     reference: ref,

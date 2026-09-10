@@ -11,8 +11,7 @@ import { CATS } from '../i18n/dict.js';
 // "Assigned" / "Resolved" step we rendered would be invented. See docs/integrations.md.
 const STATUS_KEY = { open: 'statusOpen', escalated: 'statusEscalated' };
 
-// The one honest thing we can say about the government side: here is your case number, and here
-// is where to take it. Shown on both the just-filed confirmation and the tracking result.
+// Show the eReport case number and local application status.
 function UpstreamNote({ c }) {
   return (
     <div data-stagger style={{ display: 'flex', gap: 9, marginTop: 12, color: 'var(--muted)', background: 'var(--surface)', border: '1.5px solid var(--line)', borderRadius: 14, padding: '12px 14px', fontSize: '0.85em', fontWeight: 600 }} role="note">

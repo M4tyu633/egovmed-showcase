@@ -33,11 +33,7 @@ const hashCode = (challengeId, code) => sha256Hex(`otp:${challengeId}:${code}`);
 // predictable code is the same as no code at all.
 const newCode = () => String(crypto.randomInt(0, 1_000_000)).padStart(6, '0');
 
-/**
- * "•••• 0000" from the patient's real number. The screen used to render a hardcoded "•••• 4567"
- * that belonged to nobody, which is worse than showing nothing: a patient checking that the code
- * went to the right phone was reading a decoration.
- */
+/* Mask the destination phone number while preserving the last four digits. */
 function maskPhone(phone) {
   const digits = String(phone == null ? '' : phone).replace(/\D/g, '');
   return digits.length < 4 ? '••••' : `•••• ${digits.slice(-4)}`;

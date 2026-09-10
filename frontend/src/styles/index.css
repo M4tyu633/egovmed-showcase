@@ -1,0 +1,244 @@
+/* ─────────────────────────────────────────────────────────────
+   eGovMed — design tokens and base styles.
+   FLAT art style: no drop shadows, no gradients. Cards separate via
+   1px --border and background contrast.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --primary: #1452f0;
+  --blue: #1452f0;
+  --blue-d: #12309e;
+  --secondary: #eef3fe;
+  --blue-50: #eef3fe;
+  --foreground: #0b0f1a;
+  --ink: #0b0f1a;
+  --muted-foreground: #545e74;
+  --muted: #545e74;
+  --border: #e5e9f2;
+  --line: #e5e9f2;
+  --line-2: #f4f6fb;
+  --surface: #ffffff;
+  --canvas: #f7f9fd;
+  --green: #177a3a;
+  --green-50: #e7f5ec;
+  --amber: #b45309;
+  --amber-50: #fbecd8;
+  --destructive: #e5484d;
+  --red: #e5484d;
+  --red-50: #fdecec;
+  --teal: #0e8c86;
+  --teal-50: #e2f4f2;
+  --sun: #fcd116;
+
+  --r-input: 12px;
+  --r-btn: 16px;
+  --r-card: 20px;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background: #e8ecf4;
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+button { font-family: inherit; font-size: inherit; cursor: pointer; }
+button:disabled { cursor: not-allowed; }
+input, textarea { font-family: inherit; }
+.mono { font-family: 'Geist Mono', ui-monospace, monospace; }
+
+/* Phone frame: 404px mobile column. font-size is the AA-scalable root (17/19/21px);
+   inner text uses em so text-scaling reflows without breaking layout. */
+.device {
+  width: 404px;
+  max-width: 100vw;
+  /* 100vh on mobile is the LARGE viewport — it excludes the collapsible URL bar, so the frame
+     was taller than the visible area and BottomNav sat below the fold. dvh tracks the actual
+     visible height. vh first as the fallback for browsers without dvh. */
+  height: 100vh;
+  height: 100dvh;
+  background: var(--canvas);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+/* utility strip: wordmark + EN/TL + AA + gear */
+.util {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 18px 10px;
+  background: var(--canvas);
+}
+.util-right { display: flex; align-items: center; gap: 8px; }
+.seg { display: inline-flex; background: var(--line-2); border-radius: 999px; padding: 2px; }
+.iconbtn {
+  width: 34px; height: 34px; border-radius: 999px; border: 1.5px solid var(--line);
+  background: var(--surface); color: var(--muted);
+  display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px;
+}
+.iconbtn.active { border-color: var(--primary); color: var(--primary); }
+
+/* scroll region — holds the active screen */
+.scroll { flex: 1; overflow-y: auto; overflow-x: hidden; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; min-height: 0; }
+.screen { padding: 8px 22px 28px; font-size: 1em; }
+.screen.pad-lg { padding: 8px 24px 28px; }
+
+/* text */
+.h1 { font-size: 1.75em; font-weight: 800; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+.h2 { font-size: 1.4em; font-weight: 800; line-height: 1.2; margin: 0; }
+.sub { color: var(--muted); font-size: 0.98em; line-height: 1.45; margin: 6px 0 0; }
+.overline { font-size: 0.72em; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+/* cards */
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-card); padding: 18px; }
+.card.tint { background: var(--blue-50); border-color: transparent; }
+
+/* buttons */
+.btn {
+  width: 100%; min-height: 58px; border: none; border-radius: var(--r-btn);
+  font-weight: 800; font-size: 1.05em; display: flex; align-items: center; justify-content: center; gap: 9px;
+}
+.btn.primary { background: var(--primary); color: #fff; }
+.btn.disabled, .btn:disabled { background: #c7cfdd; color: #fff; }
+.btn.secondary { background: var(--surface); color: var(--ink); border: 1.5px solid var(--border); }
+.btn.ghost { background: transparent; color: var(--primary); min-height: 0; font-size: 1em; }
+
+/* inputs */
+.field {
+  width: 100%; border: 1.5px solid var(--line); border-radius: var(--r-input);
+  background: var(--surface); color: var(--ink); padding: 14px; font-size: 1em; resize: none;
+}
+.field:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--blue-50); }
+
+/* pin / otp boxes */
+.pin-row { display: flex; gap: 8px; }
+.pin-box {
+  flex: 1; min-width: 0; height: 54px; text-align: center; font-size: 1.3em; font-weight: 800;
+  border: 1.5px solid var(--line); border-radius: 12px; background: var(--surface); color: var(--ink);
+}
+.pin-box.masked { -webkit-text-security: disc; text-security: disc; }
+.pin-box:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--blue-50); }
+
+/* focus ring for interactive elements (accessibility — keep) */
+:where(button, a, [tabindex], input, textarea):focus-visible {
+  outline: none; border-color: var(--primary); box-shadow: 0 0 0 4px var(--blue-50);
+}
+
+/* step dots */
+.dots { display: flex; gap: 6px; align-items: center; }
+.dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--line); display: block; }
+.dots i.on { background: var(--primary); width: 20px; border-radius: 999px; }
+
+/* chips */
+.chip {
+  border-radius: 999px; padding: 9px 14px; font-weight: 700; font-size: 0.9em; white-space: nowrap;
+  border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+}
+.chip.add { color: var(--primary); border-color: var(--blue-50); background: var(--blue-50); }
+.chip.paid { color: var(--green); border-color: var(--green-50); background: var(--green-50); }
+
+/* verified / success pills + semantic tints */
+/* white-space: nowrap — pill labels are translated (Tagalog strings run longer than their
+   English source, e.g. "Not verified" → "Hindi pa verified"), and without this the text wraps
+   inside the fully-rounded shape instead of the pill staying one line and its flex container
+   shrinking around it. Callers should keep the pill's own flex item at `flex: none` so it never
+   gets squeezed by a sibling instead. */
+.pill { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 6px 12px; font-weight: 800; font-size: 0.8em; white-space: nowrap; flex: none; }
+.pill.green { background: var(--green-50); color: var(--green); }
+.pill.amber { background: var(--amber-50); color: var(--amber); }
+.pill.red { background: var(--red-50); color: var(--red); }
+/* In-progress states (received / under review / assigned) — a bare .pill has no fill of its own. */
+.pill.blue { background: var(--blue-50); color: var(--primary); }
+
+.benefit-remove-btn:hover:not(:disabled) { background: var(--red); color: #fff; }
+.benefit-remove-btn:active:not(:disabled) { transform: scale(0.92); }
+
+/* icon circle */
+.icirc { width: 44px; height: 44px; border-radius: 50%; background: var(--blue-50); display: flex; align-items: center; justify-content: center; flex: none; color: var(--primary); }
+
+/* bottom nav */
+.bottomnav {
+  flex: none; position: relative; display: flex; align-items: center; justify-content: space-around;
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom)); background: var(--surface); border-top: 1px solid var(--line);
+}
+.navitem { display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--muted); font-size: 10px; font-weight: 700; background: none; border: none; padding: 4px 8px; }
+.navitem.active { color: var(--primary); }
+.navfab { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: #fff; border: none; display: flex; align-items: center; justify-content: center; margin-top: -26px; flex: none; }
+
+/* overlays */
+.scrim { position: absolute; inset: 0; background: rgba(11, 15, 26, 0.45); display: flex; align-items: flex-end; justify-content: center; z-index: 40; }
+.scrim.center { align-items: center; }
+.sheet { width: 100%; background: var(--surface); border-radius: 22px 22px 0 0; padding: 20px 22px 28px; }
+.modal { width: calc(100% - 44px); background: var(--surface); border-radius: 22px; padding: 22px; }
+.toast {
+  position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%);
+  background: #0b0f1a; color: #fff; border-radius: 14px; padding: 12px 16px; font-size: 0.9em; font-weight: 600;
+  display: flex; align-items: center; gap: 9px; z-index: 50; max-width: calc(100% - 44px);
+}
+
+/* success check disc */
+.checkdisc { width: 76px; height: 76px; border-radius: 50%; background: var(--green-50); color: var(--green); display: flex; align-items: center; justify-content: center; margin: 0 auto; }
+
+.rowsep { height: 1px; background: var(--line); border: none; margin: 14px 0; }
+.spacer { flex: 1; }
+.stack > * + * { margin-top: 12px; }
+
+.screen-wrap { will-change: transform, opacity; flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+/* overlay entrance animations */
+@keyframes scrim-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes sheet-in { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes modal-in { from { transform: scale(0.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes toast-in { from { transform: translate(-50%, 12px); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
+.scrim { animation: scrim-in 0.22s ease-out; }
+.sheet { animation: sheet-in 0.34s cubic-bezier(0.16, 1, 0.3, 1); }
+.modal { animation: modal-in 0.34s cubic-bezier(0.16, 1, 0.3, 1); }
+.toast { animation: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+
+@media (prefers-reduced-motion: reduce) {
+  .scrim, .sheet, .modal, .toast, .screen-wrap * { animation: none !important; }
+}
+
+/* animation / loading utilities */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner { width: 20px; height: 20px; border-radius: 50%; border: 2.5px solid var(--blue-50); border-top-color: var(--primary); animation: spin 0.8s linear infinite; flex: none; }
+.spinner.lg { width: 40px; height: 40px; border-width: 3.5px; }
+.spinner.white { border-color: rgba(255, 255, 255, 0.4); border-top-color: #fff; }
+
+@keyframes bounce { 0%, 80%, 100% { transform: translateY(0); opacity: 0.5; } 40% { transform: translateY(-6px); opacity: 1; } }
+.bounce-dots { display: inline-flex; gap: 5px; align-items: center; }
+.bounce-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--primary); display: block; animation: bounce 1s infinite; }
+.bounce-dots i:nth-child(2) { animation-delay: 0.15s; }
+.bounce-dots i:nth-child(3) { animation-delay: 0.3s; }
+
+/* image placeholder (image-slot — awaiting real eGovPH art) */
+.img-slot { background: repeating-linear-gradient(45deg, #eef2f8, #eef2f8 10px, #e7ecf5 10px, #e7ecf5 20px); color: var(--muted); display: flex; align-items: center; justify-content: center; font-size: 0.72em; font-weight: 700; }
+
+@keyframes shimmer { 100% { background-position: -200% 0; } }
+.skeleton { background: linear-gradient(90deg, var(--line-2) 25%, #eef1f7 37%, var(--line-2) 63%); background-size: 200% 100%; animation: shimmer 1.3s infinite; border-radius: 12px; }
+
+@keyframes pulsering { 0% { box-shadow: 0 0 0 0 rgba(229, 72, 77, 0.45); } 70% { box-shadow: 0 0 0 16px rgba(229, 72, 77, 0); } 100% { box-shadow: 0 0 0 0 rgba(229, 72, 77, 0); } }
+.pulse-red { animation: pulsering 1.5s infinite; }
+@keyframes scanline { 0% { top: 8%; } 100% { top: 92%; } }
+
+/* ── "Login as eGov" widget ──────────────────────────────────
+   The widget hard-resets its own subtree under an "@layer egov-armor" with !important on every
+   declaration, and a layered !important outranks an unlayered one — so its trigger genuinely
+   cannot be restyled from here. That is deliberate on eGovPH's part: the button is their mark and
+   partners are not meant to repaint it.
+
+   So don't fight it. Centre it and let the widget own everything inside its own box. The "size"
+   option on the render call is the one dimension lever it does expose. */
+.egov-login-slot {
+  display: flex;
+  justify-content: center;
+}

@@ -1,0 +1,24 @@
+# Private configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+.vercel/
+
+# Dependencies and generated output
+node_modules/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+*.log
+tmp/
+
+# Local tools and editor state
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini

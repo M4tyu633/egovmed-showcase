@@ -12,6 +12,24 @@ Built by **Bisaya-Hackers**, a **Top 30 team in eGov Hackathon 2026**. The proto
 
 **[Local setup](#run-locally) · [Architecture](docs/architecture.md) · [API integrations](docs/integrations.md) · [Security](docs/security.md)**
 
+## System architecture
+
+The patient app talks to one backend, which handles validation, patient access, storage, and the government service adapters.
+
+```mermaid
+flowchart LR
+    Patient[Patient] --> UI[React patient application]
+    UI --> Widget[eGov SSO login widget]
+    Widget -->|Exchange code| UI
+    UI -->|HTTPS requests| API[Express API]
+    API --> Validation[Validation, authentication, rate limits]
+    Validation --> Services[Application services]
+    Services --> Store[(Encrypted records and application state)]
+    Services --> Adapters[eGov integration adapters]
+    Adapters --> Gateway[API Developer Portal gateway]
+    Gateway --> Gov[eGov services]
+```
+
 ## Try the application
 
 1. Follow the local setup below and open **http://localhost:3000**.
@@ -22,6 +40,33 @@ Built by **Bisaya-Hackers**, a **Top 30 team in eGov Hackathon 2026**. The proto
 The shared source defaults to mock integrations and requires no government API calls. Reviewers can run the complete local demonstration without using the team's service allowance. Live integration requires the reviewer's own credentials and an explicit configuration change.
 
 ## Patient journey
+
+Solid arrows show the patient journey. Dotted arrows show the government service used at each step.
+
+```mermaid
+flowchart TD
+    Login[Sign in] --> Symptoms[Describe symptoms]
+    Symptoms --> Triage[Review suggested department and urgency]
+    Triage --> Consent[Give consent]
+    Consent --> Identity[Verify identity]
+    Identity --> Book[Book a visit]
+    Book --> Pay[Pay amount due]
+    Identity --> Records[Access medical records]
+    Login --> Report[Submit a service concern]
+
+    Login -.-> SSO[eGov SSO]
+    Triage -.-> AI[eGov AI]
+    Identity -.-> Face[Face Liveness]
+    Identity -.-> Verify[eVerify]
+    Book -.-> Message[eMessage]
+    Pay -.-> Payment[eGovPay]
+    Records -.-> Chain[eGovChain]
+    Report -.-> Message
+    Report -.-> Complaint[eReport]
+
+    classDef service fill:#123e46,color:#ffffff,stroke:#40b8a5
+    class SSO,AI,Face,Verify,Message,Payment,Chain,Complaint service
+```
 
 - **One sign-in:** eGov SSO supplies the patient profile and establishes a session.
 - **Guided routing:** eGov AI interprets symptoms in English, Tagalog, or Taglish and suggests a specialty and urgency. A rule-based safety floor prevents the model from lowering recognized urgent or emergency signals.
@@ -47,6 +92,31 @@ The backend contains live and mock adapters for eight services:
 | eReport | Complaint submission | [eReport.js](backend/src/integrations/eReport.js) |
 
 See [integration details](docs/integrations.md) for gateway URLs, authentication, and service-specific behavior.
+
+## Dependencies and environment
+
+The manifests list the direct dependencies below. Each package includes a lockfile for reproducible installation with `npm ci`.
+
+- **Backend runtime**
+  - `@upstash/redis` (^1.34.0)
+  - `cors` (^2.8.5)
+  - `dotenv` (^16.4.5)
+  - `ethers` (^6.13.2)
+  - `express` (^4.19.2)
+  - `jsonwebtoken` (^9.0.2)
+  - `morgan` (^1.10.0)
+  - `zod` (^3.23.8)
+- **Frontend runtime**
+  - `@gsap/react` (^2.1.1)
+  - `gsap` (^3.12.5)
+  - `react` (^18.3.1)
+  - `react-dom` (^18.3.1)
+  - `reicon-react` (^1.1.0)
+- **Frontend build tools**
+  - `@vitejs/plugin-react` (^4.3.1)
+  - `vite` (^6.4.3)
+
+Start with [backend/.env.example](backend/.env.example) and [frontend/.env.example](frontend/.env.example). Both are configured for local evaluation. The [configuration guide](docs/configuration.md) explains storage, secrets, per-service modes, and using your own live credentials.
 
 ## Run locally
 

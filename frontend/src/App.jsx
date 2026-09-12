@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
 import { DICT, CONST, CHANNELS, HOSPITALS, randomSlots } from './i18n/dict.js';
-import { api, getToken, setToken, demoExchangeCode } from './lib/api.js';
+import { api, getToken, setToken, demoExchangeCode, DEMO_MODE } from './lib/api.js';
 import { fallbackTriage } from './lib/triageFallback.js';
 import { runEverifyLivenessCapture, usesEverifySdk, EVERIFY_CANCELLED } from './lib/everifySdk.js';
 import { cameraLikelyBlocked, detectInAppBrowser } from './lib/inAppBrowser.js';
@@ -112,6 +112,7 @@ export default function App() {
   // after a liveness pass. Declared as a callback rather than inline in `A` because the resume
   // effect below needs it too, and `A` is rebuilt on every render so the effect can't close over it.
   const onPatientUpdated = useCallback((p) => set((prev) => ({
+    patientSynced: DEMO_MODE ? true : prev.patientSynced,
     patientName: p?.firstName || null,
     patientPhone: p?.phone || null,
     sandboxAccount: typeof p?.sandboxAccount === 'boolean' ? p.sandboxAccount : prev.sandboxAccount,
@@ -451,6 +452,11 @@ export default function App() {
     setSymptom: (v) => set({ symptom: v }),
     addChip: (t) => set((p) => { const s = p.symptom.trim(); return { symptom: s ? s.replace(/[.,]$/, '') + ', ' + t.toLowerCase() : t }; }),
     toggleRec: () => {
+      if (DEMO_MODE) {
+        set({ symptom: S.lang === 'tl' ? 'May ubo ako simula kahapon.' : 'I have had a mild cough since yesterday.' });
+        toast(S.lang === 'tl' ? 'Halimbawang sintomas lamang; walang microphone na ginamit.' : 'Sample symptoms added. No microphone was used.');
+        return;
+      }
       if (S.recording) {
         if (recTimer.current) { clearInterval(recTimer.current); recTimer.current = null; }
         if (recognizer.current) { try { recognizer.current.stop(); } catch { /* already stopped */ } recognizer.current = null; }
@@ -737,7 +743,7 @@ export default function App() {
             : p.appointments,
         }));
         if (paid) {
-          toast(S.lang === 'tl' ? 'Ipinadala ang resibo sa SMS' : 'Receipt texted to you');
+          toast(DEMO_MODE ? 'Demo receipt created. No SMS was sent.' : S.lang === 'tl' ? 'Ipinadala ang resibo sa SMS' : 'Receipt texted to you');
           A.pushNotification('payment_confirmed', { amount, apptId: S.payingApptId });
         }
       } catch (err) {
@@ -867,6 +873,7 @@ export default function App() {
 
   return (
     <div className="device" style={{ fontSize: FONT[S.textScale] }}>
+      {DEMO_MODE && <aside className="offline-demo-banner" aria-label="Demo notice"><strong>Interactive demo</strong><span>The hackathon APIs are offline. Sample data only; identity, bookings, messages and payments are simulated.</span></aside>}
       {/* utility strip */}
       <header className="util">
         <Wordmark height={20} />

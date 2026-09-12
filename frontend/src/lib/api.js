@@ -1,14 +1,19 @@
 // Thin client for the eGovMed backend. Base URL from VITE_API_BASE_URL (default /api, proxied in dev).
 // The session token from login is attached as a Bearer on every authed call.
+import { demoRequest } from './demo.js';
+export const DEMO_MODE = import.meta.env.VITE_DEMO_MODE !== 'false';
 const BASE = import.meta.env.VITE_API_BASE_URL || '/api';
 
 const SESSION_KEY = 'egovmed.session';
-let token = typeof window !== 'undefined' ? window.sessionStorage.getItem(SESSION_KEY) : null;
+let token = null;
+try { if (typeof window !== 'undefined') token = window.sessionStorage.getItem(SESSION_KEY); } catch { /* in-memory session when storage is unavailable */ }
 export function setToken(t) {
   token = t || null;
   if (typeof window === 'undefined') return;
-  if (token) window.sessionStorage.setItem(SESSION_KEY, token);
-  else window.sessionStorage.removeItem(SESSION_KEY);
+  try {
+    if (token) window.sessionStorage.setItem(SESSION_KEY, token);
+    else window.sessionStorage.removeItem(SESSION_KEY);
+  } catch { /* the in-memory token is sufficient for the demo */ }
 }
 export function getToken() { return token; }
 
@@ -41,6 +46,7 @@ export function demoExchangeCode() {
 }
 
 async function req(path, { method = 'GET', body, timeoutMs } = {}) {
+  if (DEMO_MODE) return demoRequest(path, { method, body });
   const headers = {};
   if (body !== undefined) headers['Content-Type'] = 'application/json';
   if (token) headers.Authorization = `Bearer ${token}`;

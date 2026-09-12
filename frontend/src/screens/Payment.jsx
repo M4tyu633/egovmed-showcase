@@ -3,12 +3,13 @@ import { ScreenHeader, Btn } from '../components/ui.jsx';
 import { Check } from '../components/Icons.jsx';
 import { Pop } from '../components/anim.jsx';
 import { PAY_ITEMS, BENEFIT_LINES, CHANNELS, CONST } from '../i18n/dict.js';
-import { api } from '../lib/api.js';
+import { api, DEMO_MODE } from '../lib/api.js';
 import PaymentLogo from '../components/PaymentLogos.jsx';
 
 const BILL = 750; // consultation ₱600 + facility ₱150
 
-export default function Payment({ c, lang, S, A }) {
+export default function Payment({ c: originalCopy, lang, S, A }) {
+  const c = DEMO_MODE ? { ...originalCopy, settled: 'Demo payment complete', settledSub: 'No money was charged. This receipt is a simulated result.', payHostedNote: 'Choose a method to simulate checkout. No payment page opens and no money is charged.', payNow: 'Simulate payment' } : originalCopy;
   const [benefitLines, setBenefitLines] = useState(() => BENEFIT_LINES[lang]);
   const [balance, setBalance] = useState(CONST.balance);
 
@@ -49,7 +50,7 @@ export default function Payment({ c, lang, S, A }) {
       <div className="card" data-stagger style={{ marginTop: 16 }}>
         {PAY_ITEMS[lang].map((it, i) => (
           <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', fontSize: '0.95em' }}>
-            <span>{it.label}</span><span style={{ fontWeight: 700 }}>{it.amount}</span>
+            <span>{i === 0 && S.triage?.specialty ? `${lang === 'tl' ? 'Konsultasyon' : 'Consultation'}, ${S.triage.specialty}` : it.label}</span><span style={{ fontWeight: 700 }}>{it.amount}</span>
           </div>
         ))}
         <div className="rowsep" />

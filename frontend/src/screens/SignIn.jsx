@@ -4,6 +4,7 @@ import { Fingerprint } from '../components/Icons.jsx';
 import communityArt from '../assets/signin-filipino-community.png';
 import ProfileSetup from '../components/ProfileSetup.jsx';
 import { mountEgovLogin } from '../lib/egovLoginWidget.js';
+import { DEMO_MODE } from '../lib/api.js';
 
 export default function SignIn({ c, S, A }) {
   const live = S.authMode === 'live';
@@ -95,12 +96,12 @@ export default function SignIn({ c, S, A }) {
 
   return (
     <div className="screen" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-      <h1 className="h1" style={{ marginTop: 20 }} data-stagger>{c.welcomeBack}</h1>
+      <h1 className="h1" style={{ marginTop: 20 }} data-stagger>{DEMO_MODE ? 'Welcome to eGovMed' : c.welcomeBack}</h1>
       <p className="sub" data-stagger>
-        {live ? 'Continue securely through your eGovPH account.' : c.mpinPrompt}
+        {DEMO_MODE ? 'Explore the original patient journey with a sample profile. No account or personal details needed.' : live ? 'Continue securely through your eGovPH account.' : c.mpinPrompt}
       </p>
 
-      {!live && !loading && (
+      {!DEMO_MODE && !live && !loading && (
         <>
           <div data-stagger style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 22, marginBottom: 10 }}>
             <span style={{ fontWeight: 700, fontSize: '0.92em' }}>{c.mpinLabel}</span>
@@ -116,7 +117,7 @@ export default function SignIn({ c, S, A }) {
         <div role="status" style={{ display: 'flex', alignItems: 'center', gap: 10, justifyContent: 'center', marginTop: 18, color: 'var(--muted)', fontWeight: 600 }}>
           <span className="spinner" /> <span>{c.signingIn}</span>
         </div>
-      ) : !live && !loading ? (
+      ) : !DEMO_MODE && !live && !loading ? (
         <button className="btn ghost" style={{ marginTop: 14 }} onClick={() => A.toast(c.forgotMpin)}>{c.forgotMpin}</button>
       ) : null}
 
@@ -139,7 +140,7 @@ export default function SignIn({ c, S, A }) {
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10, width: '100%', minHeight: 56, border: '1.5px solid var(--line)', background: 'var(--canvas)', color: 'var(--ink)', borderRadius: 16, fontWeight: 700 }}
         >
           {loading || S.signingIn ? <span className="spinner" /> : <Fingerprint size={22} color="var(--primary)" />}
-          <span>{loading ? 'Checking eGovPH…' : (live || codeReady) ? 'Continue with eGovPH' : c.fingerprint}</span>
+          <span>{DEMO_MODE ? 'Explore the demo' : loading ? 'Checking eGovPH…' : (live || codeReady) ? 'Continue with eGovPH' : c.fingerprint}</span>
         </button>
       )}
 
@@ -179,7 +180,7 @@ export default function SignIn({ c, S, A }) {
       )}
 
       {/* Open profile setup in mock mode. Live account identity comes from eGov SSO. */}
-      {!live && (editingProfile ? (
+      {!DEMO_MODE && !live && (editingProfile ? (
         <ProfileSetup
           c={c}
           onCancel={() => setEditingProfile(false)}

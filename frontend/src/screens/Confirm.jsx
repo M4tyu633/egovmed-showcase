@@ -2,8 +2,10 @@ import { Btn } from '../components/ui.jsx';
 import { Check } from '../components/Icons.jsx';
 import { Pop } from '../components/anim.jsx';
 import { PREP, CONST, SLOTS } from '../i18n/dict.js';
+import { DEMO_MODE } from '../lib/api.js';
 
-export default function Confirm({ c, lang, S, A }) {
+export default function Confirm({ c: originalCopy, lang, S, A }) {
+  const c = DEMO_MODE ? { ...originalCopy, confirmTitle: 'Demo booking confirmed', texted: 'Sample reference only. No booking or SMS was sent.', prep: 'What happens in this demo' } : originalCopy;
   const dept = S.triage?.specialty || CONST.dept;
   const batch = (S.lastBooked || []).filter((r) => r.appt);
   const multi = batch.length > 1;
@@ -37,7 +39,7 @@ export default function Confirm({ c, lang, S, A }) {
       <div data-stagger className="card" style={{ marginTop: 14 }}>
         <div style={{ fontWeight: 800, marginBottom: 10 }}>{c.prep}</div>
         <div className="stack">
-          {PREP[lang].map((p, i) => (
+          {(DEMO_MODE ? ['Your appointment exists only in this demonstration.', 'No hospital booking or notification was submitted.', 'Continue to try the simulated payment flow.'] : PREP[lang]).map((p, i) => (
             <div key={i} style={{ display: 'flex', gap: 11, alignItems: 'flex-start' }}>
               <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--blue-50)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', flex: 'none', marginTop: 1 }}>
                 <Check size={13} />

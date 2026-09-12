@@ -4,6 +4,7 @@ import { User, Check } from '../components/Icons.jsx';
 import { Pop } from '../components/anim.jsx';
 import { usesEverifySdk } from '../lib/everifySdk.js';
 import { copyAppLink } from '../lib/inAppBrowser.js';
+import { DEMO_MODE } from '../lib/api.js';
 
 export default function Liveness({ c, S, A }) {
   const verified = S.liveness === 'verified';
@@ -39,7 +40,7 @@ export default function Liveness({ c, S, A }) {
   // One boolean rather than the raw state, so the dependency does not change between 'capturing'
   // and 'verifying': keying the effect on S.liveness tore the stream down and re-acquired it
   // halfway through the capture, a visible stall and one more chance for the grant to be refused.
-  const wantsPreview = (S.liveness === 'capturing' || S.liveness === 'verifying') && !usesEverifySdk(S);
+  const wantsPreview = !DEMO_MODE && (S.liveness === 'capturing' || S.liveness === 'verifying') && !usesEverifySdk(S);
   useEffect(() => {
     if (!wantsPreview) return undefined;
     if (!navigator.mediaDevices?.getUserMedia) { setCamera('unavailable'); return undefined; }
